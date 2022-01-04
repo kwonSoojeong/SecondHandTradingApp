@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1007496115065",
+    "firebase_url": "https://simpletinderapp-default-rtdb.firebaseio.com",
+    "project_id": "simpletinderapp",
+    "storage_bucket": "simpletinderapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007496115065:android:5e01d2b8f75cf7634c35a8",
+        "android_client_info": {
+          "package_name": "com.crystal.simpletinderapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007496115065-m57egq22dd1ldnbtpjb54joqmetckrnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWgP34aifSBRqKOvmgtqgUgCD6Ly6UusA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007496115065-m57egq22dd1ldnbtpjb54joqmetckrnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007496115065:android:b0c49d76eb13b75f4c35a8",
+        "android_client_info": {
+          "package_name": "com.crystal.tradingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007496115065-m57egq22dd1ldnbtpjb54joqmetckrnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWgP34aifSBRqKOvmgtqgUgCD6Ly6UusA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007496115065-m57egq22dd1ldnbtpjb54joqmetckrnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
