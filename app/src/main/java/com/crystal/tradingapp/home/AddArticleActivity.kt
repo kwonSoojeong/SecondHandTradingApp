@@ -2,12 +2,16 @@ package com.crystal.tradingapp.home
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.DatabaseErrorHandler
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
+import androidx.core.view.isVisible
 import com.crystal.tradingapp.DBKey
 import com.crystal.tradingapp.databinding.ActivityAddArticleBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -23,17 +27,18 @@ class AddArticleActivity : AppCompatActivity() {
         const val READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 1010
         const val CONTENT_PROVIDER_IMAGE_REQUEST_CODE = 2020
     }
+
     private val auth: FirebaseAuth by lazy {
         Firebase.auth
     }
     private val storage: FirebaseStorage by lazy {
         Firebase.storage
     }
-    private val articleDB: DatabaseReference by lazy{
+    private val articleDB: DatabaseReference by lazy {
         Firebase.database.reference.child(DBKey.DB_ARTICLES)
     }
 
-    private val binding: ActivityAddArticleBinding by lazy{
+    private val binding: ActivityAddArticleBinding by lazy {
         ActivityAddArticleBinding.inflate(layoutInflater)
     }
     private var imageUri: Uri? = null
@@ -67,7 +72,6 @@ class AddArticleActivity : AppCompatActivity() {
                 }
             }
         }
-
         initSubmitButton()
     }
 
@@ -88,9 +92,7 @@ class AddArticleActivity : AppCompatActivity() {
                 }
                 return
             }
-
         }
-
     }
 
     private fun startContentProvider() {
@@ -100,7 +102,12 @@ class AddArticleActivity : AppCompatActivity() {
         startActivityForResult(intent, CONTENT_PROVIDER_IMAGE_REQUEST_CODE)
 //        registerForActivityResult()
     }
-
+    private fun hideProgress(){
+        binding.progressBar.isVisible = false
+    }
+    private fun showProgress(){
+        binding.progressBar.isVisible = true
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) {
@@ -113,7 +120,7 @@ class AddArticleActivity : AppCompatActivity() {
                 if (uri != null) {
                     binding.imageView.setImageURI(uri)
                     imageUri = uri
-                }else{
+                } else {
                     Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -138,16 +145,62 @@ class AddArticleActivity : AppCompatActivity() {
     }
 
     private fun initSubmitButton() {
-     binding.submitButton.setOnClickListener {
-         //DB저장
-         val title = binding.titleEditText.text.toString()
-         val price = binding.priceEditText.text.toString()
-         val seller = auth.currentUser?.uid.orEmpty()
+        binding.submitButton.setOnClickListener {
+            showProgress()
+            //DB저장
+            val title = binding.titleEditText.text.toString()
+            val price = binding.priceEditText.text.toString()
+            val seller = auth.currentUser?.uid.orEmpty()
 
-         val model = ArticleModel(seller, title, System.currentTimeMillis(), "${price}원", "")
-         articleDB.push().setValue(model)
+            if (imageUri != null) {
+                val photoUri = imageUri ?: return@setOnClickListener
+                uploadPhoto(photoUri,
+                    successHandler = { uri ->
+                        //서버에 이미지 업로드
+                        //  db에 업로드하는거랑
 
-         this.finish()
-     }
+                        uploadArticle(seller, title, price, uri.toString())
+                    },
+                    errorHandler = {
+                        Toast.makeText(this, "사진 업로드 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        hideProgress()
+                    }
+                )
+            } else {
+                uploadArticle(seller, title, price, "")
+            }
+        }
+    }
+
+    private fun uploadPhoto(
+        photoUri: Uri,
+        successHandler: (Uri) -> Unit,
+        errorHandler: () -> Unit
+    ) {
+        val fileName = "${System.currentTimeMillis()}.png"
+        storage.reference.child("article/photo").child(fileName)
+            .putFile(photoUri)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    storage.reference.child("article/photo").child(fileName)
+                        .downloadUrl
+                        .addOnSuccessListener { uri ->
+                            successHandler(uri)
+                        }.addOnFailureListener {
+                            errorHandler()
+                        }
+                } else {
+                    errorHandler()
+                }
+            }
+
+    }
+
+    private fun uploadArticle(seller: String, title: String, price: String, uriStr: String) {
+        val model =
+            ArticleModel(seller, title, System.currentTimeMillis(), "${price}원", uriStr)
+        articleDB.push().setValue(model)
+        hideProgress()
+        this.finish()
     }
 }
