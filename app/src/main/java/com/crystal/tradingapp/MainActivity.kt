@@ -5,20 +5,21 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.crystal.tradingapp.chatList.ChatListFragment
 import com.crystal.tradingapp.home.HomeFragment
-import com.crystal.tradingapp.mypage.MypageFragment
+import com.crystal.tradingapp.mypage.MyPageFragment
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
 
+
+    private val homeFragment = HomeFragment()
+    private val chatListFragment = ChatListFragment()
+    private val myPageFragment = MyPageFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val homeFragment = HomeFragment()
-        val chatListFragment = ChatListFragment()
-        val myPageFragment = MypageFragment()
 
         replaceFragment(homeFragment)
 
