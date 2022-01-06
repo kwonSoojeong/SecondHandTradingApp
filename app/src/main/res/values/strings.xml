@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">tradingApp</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="myPage">마이페이지</string>
 </resources>

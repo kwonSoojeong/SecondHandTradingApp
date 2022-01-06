@@ -66,12 +66,12 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private fun initAddButton(view:View) {
         binding.addFloatingButton.setOnClickListener{
-//            if( auth.currentUser != null){
+            if( auth.currentUser != null){
                 startActivity(Intent(requireContext(), AddArticleActivity::class.java))
-//            }else{
+            }else{
                 //need to login
-//                Snackbar.make(view, "로그인 후 사용해주세요", Snackbar.LENGTH_SHORT).show()
-//            }
+                Snackbar.make(view, "로그인 후 사용해주세요", Snackbar.LENGTH_SHORT).show()
+            }
 
         }
     }
