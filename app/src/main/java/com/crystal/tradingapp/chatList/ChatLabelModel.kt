@@ -1,6 +1,6 @@
 package com.crystal.tradingapp.chatList
 
-data class ChatModel(
+data class ChatLabelModel(
     val buyerId: String,
     val sellerID: String,
     val itemTitle: String,

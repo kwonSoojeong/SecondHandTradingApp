@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".home.AddArticleActivity" />
-
+        <activity android:name=".chatList.ChatRoomActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

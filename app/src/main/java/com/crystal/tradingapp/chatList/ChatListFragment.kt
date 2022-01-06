@@ -1,5 +1,6 @@
 package com.crystal.tradingapp.chatList
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -20,7 +21,7 @@ class ChatListFragment : Fragment(R.layout.fragment_chat_list) {
 
     private var _binding: FragmentChatListBinding? = null
     private val binding get() = _binding!!
-    private val chatRoomList = mutableListOf<ChatModel>()
+    private val chatRoomList = mutableListOf<ChatLabelModel>()
     private val auth: FirebaseAuth by lazy {
         Firebase.auth
     }
@@ -28,21 +29,24 @@ class ChatListFragment : Fragment(R.layout.fragment_chat_list) {
         Firebase.database.reference.child(DBKey.DB_USERS)
     }
 
-    private val chatAdapter: ChatAdapter by lazy {
-        ChatAdapter({ chatModel ->
-
-        })
+    private val chatLabelAdapter: ChatLabelAdapter by lazy {
+        ChatLabelAdapter { chatLabelModel ->
+            context?.let { it ->
+                val intent = Intent(it, ChatRoomActivity::class.java)
+                intent.putExtra("chatKey", chatLabelModel.key)
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentChatListBinding.bind(view)
-        binding.chatRecyclerView.adapter = chatAdapter
+        binding.chatRecyclerView.adapter = chatLabelAdapter
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(context)
 
         //데이터 불러오기
         loadChatList()
-
     }
 
     private fun loadChatList() {
@@ -52,17 +56,17 @@ class ChatListFragment : Fragment(R.layout.fragment_chat_list) {
         }
 
         auth.currentUser?.let {
-            val chatDB = usersDB.child(it.uid).child(DBKey.CHAT)
+            val chatDB = usersDB.child(it.uid).child(DBKey.CHAT_LIST)
 
             chatDB.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { data ->
-                        val model = data.getValue(ChatModel::class.java)
+                        val model = data.getValue(ChatLabelModel::class.java)
                         model ?: return
                         chatRoomList.add(model)
                     }
-                    chatAdapter.submitList(chatRoomList)
-                    chatAdapter.notifyDataSetChanged()
+                    chatLabelAdapter.submitList(chatRoomList)
+                    chatLabelAdapter.notifyDataSetChanged()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -73,7 +77,7 @@ class ChatListFragment : Fragment(R.layout.fragment_chat_list) {
 
     override fun onResume() {
         super.onResume()
-        chatAdapter.notifyDataSetChanged()
+        chatLabelAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroyOptionsMenu() {

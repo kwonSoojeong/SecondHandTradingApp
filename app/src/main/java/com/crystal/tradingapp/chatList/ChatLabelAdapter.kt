@@ -8,19 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crystal.tradingapp.databinding.ItemChatBinding
 
 
-class ChatAdapter(val onItemClicked: (ChatModel) -> Unit) :
-    ListAdapter<ChatModel, ChatAdapter.ViewHolder>(diffUtil) {
+class ChatLabelAdapter(val onItemClicked: (ChatLabelModel) -> Unit) :
+    ListAdapter<ChatLabelModel, ChatLabelAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: ItemChatBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(chatModel: ChatModel) {
-            binding.chatRoomTitleTextView.text = chatModel.itemTitle
+        fun bind(chatLabelModel: ChatLabelModel) {
+            binding.chatRoomTitleTextView.text = chatLabelModel.itemTitle
             binding.root.setOnClickListener {
-                onItemClicked(chatModel)
+                onItemClicked(chatLabelModel)
             }
         }
 
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemChatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding = binding)
@@ -30,13 +29,14 @@ class ChatAdapter(val onItemClicked: (ChatModel) -> Unit) :
         holder.bind(currentList[position])
     }
 
+
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<ChatModel>() {
-            override fun areItemsTheSame(oldItem: ChatModel, newItem: ChatModel): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<ChatLabelModel>() {
+            override fun areItemsTheSame(oldItem: ChatLabelModel, newItem: ChatLabelModel): Boolean {
                 //고유한 키값을 비교
                 return oldItem.key == newItem.key
             }
-            override fun areContentsTheSame(oldItem: ChatModel, newItem: ChatModel): Boolean {
+            override fun areContentsTheSame(oldItem: ChatLabelModel, newItem: ChatLabelModel): Boolean {
                 return oldItem == newItem
             }
         }

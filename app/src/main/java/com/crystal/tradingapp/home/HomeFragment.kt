@@ -3,13 +3,12 @@ package com.crystal.tradingapp.home
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crystal.tradingapp.DBKey
 import com.crystal.tradingapp.R
-import com.crystal.tradingapp.chatList.ChatModel
+import com.crystal.tradingapp.chatList.ChatLabelModel
 import com.crystal.tradingapp.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -96,18 +95,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         //내가 올린 물건
                         Snackbar.make(view, "내가 올린 아이템 입니다", Snackbar.LENGTH_SHORT).show()
                     } else {
-                        val chatRoom = ChatModel(
+                        val chatRoom = ChatLabelModel(
                             buyerId = currentUser.uid,
                             sellerID = articleModle.sellerId,
                             itemTitle = articleModle.title,
                             key = System.currentTimeMillis()
                         )
                         usersDB.child(currentUser.uid)
-                            .child(DBKey.CHAT)
+                            .child(DBKey.CHAT_LIST)
                             .push()
                             .setValue(chatRoom)
                         usersDB.child(articleModle.sellerId)
-                            .child(DBKey.CHAT)
+                            .child(DBKey.CHAT_LIST)
                             .push()
                             .setValue(chatRoom)
 
