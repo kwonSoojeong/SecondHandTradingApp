@@ -43,7 +43,7 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
 
                 } else {
                     //로그아웃
-                    successSingOut()
+                    successSignOut()
                 }
             }
         }
@@ -52,11 +52,24 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
                 val email = binding.emailEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
                 auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener (requireActivity()){task->
-                        if(task.isSuccessful){
-                            Toast.makeText(context, "회원가입에 성공했습니다. 로그인 버튼을 눌러주세요", Toast.LENGTH_SHORT).show()
-                        }else{
-                            Toast.makeText(context, "회원가입에 실패했습니다. 이미 가입한 이메일일 수 있습니다", Toast.LENGTH_SHORT).show()
+                    .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isSuccessful) {
+                            //회원가입하면 로그인이 된다.
+                            successSignIn()
+                            Toast.makeText(
+                                context,
+                                "회원가입에 성공했습니다."/* 로그인 버튼을 눌러주세요*/,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.d("MyPageFragment", "auth : " + auth.currentUser)
+
+
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "회원가입에 실패했습니다. 이미 가입한 이메일일 수 있습니다",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
             }
@@ -81,7 +94,7 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
 
     }
 
-    private fun successSingOut() {
+    private fun successSignOut() {
         auth.signOut()
         binding?.let { binding ->
             binding.emailEditText.text.clear()
@@ -111,7 +124,7 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
     override fun onStart() {
         super.onStart()
         if (auth.currentUser == null) {
-            successSingOut()
+            successSignOut()
         } else {
             binding?.let { binding ->
                 binding.emailEditText.isEnabled = false
